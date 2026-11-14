@@ -5,6 +5,7 @@
 - **Проект**: форк open-source библиотеки [AdapterDelegates](https://github.com/sockeqwe/AdapterDelegates) (Android, multi-module: `library`, `kotlin-dsl`, `kotlin-dsl-viewbinding`, `kotlin-dsl-layoutcontainer`, `paging`, `app`).
 - **Почему этот проект подходит под ТЗ**: публичный форк опенсорса (закрытых данных и секретов нет), 5 собираемых модулей с реальной бизнес-логикой (менеджер делегатов, DiffUtil/AsyncListDiffer и Paging-интеграции, три DSL-варианта), явные точки расширения (новые `AdapterDelegate`, fallback-делегаты, DSL), юнит-тесты как способ проверки изменений.
 - **Ветка**: `homework/ai-instructions`.
+- **PR**: https://github.com/SID-mobile-dev/AdapterDelegates/pull/1
 - **AI-инструмент (цель инструкций)**: OpenCode, официальный формат — `AGENTS.md` в корне репозитория.
 - **AI-инструмент (помощник в работе)**: OpenCode (сессия с моделью `mimo-v2.6-pro`) — использовался для анализа кодовой базы, диагностики и генерации черновиков инструкций.
 
