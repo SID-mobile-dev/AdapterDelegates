@@ -1,3 +1,4 @@
+// AI-TASK: Consistent NullPointerException("Items datasource is null!") in onBindViewHolder
 /*
  * Copyright (c) 2015 Hannes Dorfmann.
  *
@@ -293,9 +294,14 @@ public class AdapterDelegatesManager<T> {
      * @param payloads A non-null list of merged payloads. Can be empty list if requires full update.
      * @throws NullPointerException if no AdapterDelegate has been registered for ViewHolders
      *                              viewType
+     * @throws NullPointerException if items is null
      */
     public void onBindViewHolder(@NonNull T items, int position,
                                  @NonNull RecyclerView.ViewHolder holder, List payloads) {
+
+        if (items == null) {
+            throw new NullPointerException("Items datasource is null!");
+        }
 
         AdapterDelegate<T> delegate = getDelegateForViewType(holder.getItemViewType());
         if (delegate == null) {
@@ -317,6 +323,7 @@ public class AdapterDelegatesManager<T> {
      * @param holder   the ViewHolder to bind
      * @throws NullPointerException if no AdapterDelegate has been registered for ViewHolders
      *                              viewType
+     * @throws NullPointerException if items is null
      */
     public void onBindViewHolder(@NonNull T items, int position,
                                  @NonNull RecyclerView.ViewHolder holder) {
