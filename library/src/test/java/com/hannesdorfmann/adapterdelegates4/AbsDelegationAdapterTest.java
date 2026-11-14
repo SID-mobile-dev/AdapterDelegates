@@ -1,3 +1,4 @@
+// AI-TASK: Consistent null items datasource contract in onBindViewHolder
 package com.hannesdorfmann.adapterdelegates4;
 
 import android.view.ViewGroup;
@@ -85,6 +86,10 @@ public class AbsDelegationAdapterTest {
         adapter.onCreateViewHolder(parent, 0);
         Assert.assertTrue(delegate1.onCreateViewHolderCalled);
         Assert.assertFalse(delegate2.onCreateViewHolderCalled);
+
+        // items is @Nullable in this adapter but the AdapterDelegatesManager requires a non-null
+        // datasource for onBindViewHolder(), just like for getItemViewType()
+        adapter.setItems(new Object());
 
         // BindViewHolder
         adapter.onBindViewHolder(delegate1.viewHolder, 1);

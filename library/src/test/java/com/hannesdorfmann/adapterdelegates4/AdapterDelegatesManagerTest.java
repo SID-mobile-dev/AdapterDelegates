@@ -1,3 +1,4 @@
+// AI-TASK: Regression tests for null items datasource in onBindViewHolder
 package com.hannesdorfmann.adapterdelegates4;
 
 import android.view.ViewGroup;
@@ -622,5 +623,85 @@ public class AdapterDelegatesManagerTest {
         SpyableAdapterDelegate<List> fallbackDelegate = new SpyableAdapterDelegate<>(3);
         manager.setFallbackDelegate(fallbackDelegate);
         Assert.assertEquals(fallbackDelegate, manager.getFallbackDelegate());
+    }
+
+    /**
+     * Regression test: onBindViewHolder with null items must throw the same understandable
+     * NullPointerException("Items datasource is null!") as getItemViewType does, instead of
+     * letting the delegate fail with an unclear NullPointerException.
+     */
+    @Test
+    public void onBindViewHolderNullItems() {
+
+        // Delegate that dereferences items during bind, like real delegates do (e.g. AbsListItemAdapterDelegate)
+        AdapterDelegate<List<Object>> dereferencesItems = new AdapterDelegate<List<Object>>() {
+            @Override
+            public boolean isForViewType(@NonNull List<Object> items, int position) {
+                return true;
+            }
+
+            @NonNull
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+                return null;
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull List<Object> items, int position, @NonNull RecyclerView.ViewHolder holder, @NonNull List<Object> payloads) {
+                items.get(position); // NPE with unclear message if items is null
+            }
+        };
+
+        AdapterDelegatesManager<List<Object>> manager = new AdapterDelegatesManager<>();
+        manager.addDelegate(dereferencesItems);
+
+        SpyableAdapterDelegate<List<Object>> spy = new SpyableAdapterDelegate<>(0);
+        RecyclerView.ViewHolder vh = spy.viewHolder;
+
+        try {
+            manager.onBindViewHolder(null, 0, vh);
+            Assert.fail("NullPointerException expected because items datasource is null");
+        } catch (NullPointerException e) {
+            Assert.assertEquals("Items datasource is null!", e.getMessage());
+        }
+    }
+
+    /**
+     * Regression test: same as {@link #onBindViewHolderNullItems()} but for the
+     * onBindViewHolder overload with payloads.
+     */
+    @Test
+    public void onBindViewHolderWithPayloadsNullItems() {
+
+        AdapterDelegate<List<Object>> dereferencesItems = new AdapterDelegate<List<Object>>() {
+            @Override
+            public boolean isForViewType(@NonNull List<Object> items, int position) {
+                return true;
+            }
+
+            @NonNull
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+                return null;
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull List<Object> items, int position, @NonNull RecyclerView.ViewHolder holder, @NonNull List<Object> payloads) {
+                items.get(position); // NPE with unclear message if items is null
+            }
+        };
+
+        AdapterDelegatesManager<List<Object>> manager = new AdapterDelegatesManager<>();
+        manager.addDelegate(dereferencesItems);
+
+        SpyableAdapterDelegate<List<Object>> spy = new SpyableAdapterDelegate<>(0);
+        RecyclerView.ViewHolder vh = spy.viewHolder;
+
+        try {
+            manager.onBindViewHolder(null, 0, vh, new ArrayList<Object>());
+            Assert.fail("NullPointerException expected because items datasource is null");
+        } catch (NullPointerException e) {
+            Assert.assertEquals("Items datasource is null!", e.getMessage());
+        }
     }
 }
